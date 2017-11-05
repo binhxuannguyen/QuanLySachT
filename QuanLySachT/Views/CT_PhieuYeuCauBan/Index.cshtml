@@ -1,0 +1,65 @@
+﻿@model IEnumerable<QuanLySachT.Models.CT_PhieuYeuCauBan>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Chi tiết phiếu yêu cầu bán</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.SoLuong)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PhieuYeuCauBan.MaPhieu)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Sach.TenSach)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    if (item.PhieuYeuCauBan.TinhTrang == true)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SoLuong)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhieuYeuCauBan.MaPhieu)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sach.TenSach)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+            </td>
+        </tr>
+    }
+    /*<tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.SoLuong)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PhieuYeuCauBan.MaPhieu)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Sach.TenSach)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>*/
+}
+
+</table>
