@@ -10,119 +10,118 @@ using QuanLySachT.Models;
 
 namespace QuanLySachT.Controllers
 {
-    public class PhieuNhapsController : Controller
+    public class PhieuXuatsController : Controller
     {
         private demoQLSTEntities db = new demoQLSTEntities();
 
-        // GET: PhieuNhaps
+        // GET: PhieuXuats
         public ActionResult Index()
         {
-            var phieuNhaps = db.PhieuNhaps.OrderByDescending(p => p.NgayGio).Include(p => p.NhanVien).Include(p => p.NhaXuatBan);
-            return View(phieuNhaps.ToList());
+            var phieuXuats = db.PhieuXuats.OrderByDescending(p => p.NgayGio).Include(p => p.DaiLy);
+            return View(phieuXuats.ToList());
         }
 
-        // GET: PhieuNhaps/Details/5
+        // GET: PhieuXuats/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PhieuNhap phieuNhap = db.PhieuNhaps.Find(id);
-            if (phieuNhap == null)
+            PhieuXuat phieuXuat = db.PhieuXuats.Find(id);
+            var tongtien = db.CT_PhieuXuat.Where(ct => ct.MaPhieu == phieuXuat.MaPhieu).Sum(ct => ct.ThanhTien);
+            ViewBag.TongTien = tongtien;
+            if (phieuXuat == null)
             {
                 return HttpNotFound();
             }
-            return View(phieuNhap);
+            return View(phieuXuat);
         }
 
-        // GET: PhieuNhaps/Create
+        // GET: PhieuXuats/Create
         public ActionResult Create()
         {
-            ViewBag.MaNhanVien = new SelectList(db.NhanViens, "MaNhanVien", "TenNhanVien");
-            ViewBag.MaNXB = new SelectList(db.NhaXuatBans, "MaNXB", "TenNXB");
+            ViewBag.MaDaiLy = new SelectList(db.DaiLies, "MaDaiLy", "TenDaiLy");
             return View();
         }
 
-        // POST: PhieuNhaps/Create
+        // POST: PhieuXuats/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MaPhieu,NguoiGiaoSach,NgayGio,MaNXB,MaNhanVien,TinhTrang")] PhieuNhap phieuNhap)
+        public ActionResult Create([Bind(Include = "MaPhieu,NgayGio,NguoiNhan,TongTien,MaDaiLy,TinhTrang")] PhieuXuat phieuXuat)
         {
             if (ModelState.IsValid)
             {
-                phieuNhap.NgayGio = DateTime.Now;
-                phieuNhap.TinhTrang = true;
-                db.PhieuNhaps.Add(phieuNhap);
+                phieuXuat.NgayGio = DateTime.Now;
+                phieuXuat.TinhTrang = true;
+                db.PhieuXuats.Add(phieuXuat);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.MaNhanVien = new SelectList(db.NhanViens, "MaNhanVien", "TenNhanVien", phieuNhap.MaNhanVien);
-            ViewBag.MaNXB = new SelectList(db.NhaXuatBans, "MaNXB", "TenNXB", phieuNhap.MaNXB);
-            return View(phieuNhap);
+            ViewBag.MaDaiLy = new SelectList(db.DaiLies, "MaDaiLy", "TenDaiLy", phieuXuat.MaDaiLy);
+            return View(phieuXuat);
         }
 
-        // GET: PhieuNhaps/Edit/5
+        // GET: PhieuXuats/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PhieuNhap phieuNhap = db.PhieuNhaps.Find(id);
-            if (phieuNhap == null)
+            PhieuXuat phieuXuat = db.PhieuXuats.Find(id);
+            if (phieuXuat == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.MaNhanVien = new SelectList(db.NhanViens, "MaNhanVien", "TenNhanVien", phieuNhap.MaNhanVien);
-            ViewBag.MaNXB = new SelectList(db.NhaXuatBans, "MaNXB", "TenNXB", phieuNhap.MaNXB);
-            return View(phieuNhap);
+            ViewBag.MaDaiLy = new SelectList(db.DaiLies, "MaDaiLy", "TenDaiLy", phieuXuat.MaDaiLy);
+            return View(phieuXuat);
         }
 
-        // POST: PhieuNhaps/Edit/5
+        // POST: PhieuXuats/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "MaPhieu,NguoiGiaoSach,NgayGio,MaNXB,MaNhanVien")] PhieuNhap phieuNhap)
+        public ActionResult Edit([Bind(Include = "MaPhieu,NgayGio,NguoiNhan,TongTien,MaDaiLy,TinhTrang")] PhieuXuat phieuXuat)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(phieuNhap).State = EntityState.Modified;
+                db.Entry(phieuXuat).State = EntityState.Modified;
+                phieuXuat.TinhTrang = true;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.MaNhanVien = new SelectList(db.NhanViens, "MaNhanVien", "TenNhanVien", phieuNhap.MaNhanVien);
-            ViewBag.MaNXB = new SelectList(db.NhaXuatBans, "MaNXB", "TenNXB", phieuNhap.MaNXB);
-            return View(phieuNhap);
+            ViewBag.MaDaiLy = new SelectList(db.DaiLies, "MaDaiLy", "TenDaiLy", phieuXuat.MaDaiLy);
+            return View(phieuXuat);
         }
 
-        // GET: PhieuNhaps/Delete/5
+        // GET: PhieuXuats/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PhieuNhap phieuNhap = db.PhieuNhaps.Find(id);
-            if (phieuNhap == null)
+            PhieuXuat phieuXuat = db.PhieuXuats.Find(id);
+            if (phieuXuat == null)
             {
                 return HttpNotFound();
             }
-            return View(phieuNhap);
+            return View(phieuXuat);
         }
 
-        // POST: PhieuNhaps/Delete/5
+        // POST: PhieuXuats/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            PhieuNhap phieuNhap = db.PhieuNhaps.Find(id);
-            /*db.PhieuNhaps.Remove(phieuNhap);*/
-            phieuNhap.TinhTrang = false;
+            PhieuXuat phieuXuat = db.PhieuXuats.Find(id);
+            phieuXuat.TinhTrang = false;
+            //db.PhieuXuats.Remove(phieuXuat);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
